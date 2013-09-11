@@ -172,7 +172,7 @@ open reveal.js/index.html
 					</ul>
 				</section>
 
-				<section data-background="lib/img/5112340801_fe22999400_o.jpg">
+				<section data-background="lib/img/5112340801_fe22999400_o.jpg" data-transition="zoom">
 					<h2>Workflow history</h2>
 					<img style="opacity:0.8" src="lib/img/graphs/workflowHistory.png">
 				</section>
@@ -182,13 +182,14 @@ open reveal.js/index.html
 					<ul>
 						<li>history is kept in AWS</li>
 						<li>work is executed on your machines</li>
+						<li>deciders get the history so far with decision tasks</li>
 						<li>many more types of history events</li>
 					</ul>
 				</section>
 
 				<section data-background="lib/img/5112340801_fe22999400_o.jpg">
 					<h2>Routing tasks</h2>
-					<p>How to keep distributed tasks from executing on your dev machine.</p>
+					<p>keep distributed tasks from executing on your dev machine</p>
 					<ul>
 						<li>domains<ul>
 						    <li>namespace</li>
@@ -200,7 +201,7 @@ open reveal.js/index.html
 						    <li>no need to register</li>
 					    </ul></li>
 						<li>versioning<ul>
-						    <li>can be set per workflow and per action</li>
+						    <li>can be set per workflow and per activity</li>
 						    <li>allows different code within tasklists </li>
 					    </ul></li>
 					</ul>
@@ -209,13 +210,13 @@ open reveal.js/index.html
 				<section data-background="lib/img/5112340801_fe22999400_o.jpg">
 					<h3>Things to consider when writing a distributed workflow</h3>
 					<ul>
-						<li>serialization of inputs and results to Strings (4k)</li>
+						<li>serialization of inputs and results to Strings (4k bytes)</li>
 						<li>heartbeats for long running activities<ul>
 					        <li>better timeout behavior</li>
 					        <li>display message of last heartbeat on error</li>
-					        <li>will be cancelled more quickly</li>
+					        <li>more responsive cancel</li>
 					    </ul></li>
-						<li>idempotence where possible (retries, errors, timeouts)</li>
+						<li>idempotence where possible</li>
 					</ul>
 				</section>
 
@@ -263,10 +264,16 @@ open reveal.js/index.html
 				<section data-background="lib/img/5112340801_fe22999400_o.jpg">
 					<p>SWF API</p>
 					<ul>
-						<li>good for managing AWS SWF objects</li>
-						<li>bad for writing workflows</li>
-						<li>consume history events and provide decisions</li>
-						<li>workflow becomes a low level state machine</li>
+						<li>good for managing AWS SWF objects<ul>
+					       	<li>Domain</li>
+					       	<li>Workflow Type</li>
+					       	<li>Activity Type</li>
+					       	<li>Workflow Execution</li>
+					    </ul></li>
+						<li>bad for writing workflows<ul>
+					       	<li>consume history events and provide decisions</li>
+					       	<li>workflow becomes a low level state machine</li>
+					    </ul></li>
 					</ul>
 				</section>
 
@@ -383,8 +390,8 @@ interface TestActivities {
 				<section data-background="lib/img/110394524_8dbc5b9cc7_o.jpg">
 					<h2>Glisten</h2>
 					<ul>
-						<li>ease of use SWF library</li>
 						<li>Flow - (AspectJ + generated code) + Groovy</li>
+						<li>ease of use SWF library</li>
 						<li>still uses core Flow objects</li>
 						<li>part of Asgard, dedicated Github project soon</li>
 					</ul>
@@ -414,7 +421,7 @@ interface TestActivities {
 						<li>recordHeartbeat sends status to workflow</li>
 						<li>WorkflowExecution is used for id</li>
 						<li>task token is id of activity</li>
-						<li>explian activities first, workflow is more interesting</li>
+						<li>explain activities first, workflow is more interesting</li>
 					</ul>
 				</section>
 
@@ -441,11 +448,10 @@ interface TestActivities {
 
 				<section data-background="lib/img/110394524_8dbc5b9cc7_o.jpg">
 					<pre><code>&lt;T> Promise&lt;T> waitFor(Promise promise, Closure&lt;Promise&lt;T>> work)</code></pre>
-<pre style="opacity:0.7"><code contenteditable>Promise&lt;String> promise = promiseFor(activities.doSomething()) {
-    waitFor(promise) {
-        status promise.get()
-        Promise.Void
-    }
+<pre style="opacity:0.7"><code contenteditable>Promise&lt;String> promise = promiseFor(activities.doSomething())
+waitFor(promise) {
+    status promise.get()
+    Promise.Void
 }
 </code></pre>
 	<ul>
@@ -555,24 +561,22 @@ interface TestActivities {
 }.result
 </code></pre>
 	<ul>
-		<li>not on you to manage result (chaining Promises out of scope)</li>
-		<li>SWF version creates a Flow TryCatchFinally</li>
+		<li>you don't have to manage result</li>
+		<li>creates a Flow TryCatchFinally</li>
 		<li>local version for use in unit tests</li>
 	</ul>
 				</section>
 
 				<section data-background="lib/img/110394524_8dbc5b9cc7_o.jpg">
-					<p>Basic needs not met by SWF</p>
+					<h3>Glisten handles basic needs not met by SWF</h3>
+					<p>(by abusing tags and history)</p>
 	<ul>
 		<li>workflow execution description<ul>
-	        <li>shove data into tags</li>
-	        <li>only get 5 tags and they only hold 256 chars</li>
-	        <li>tags are designed for indexable keywords</li>
+	        <li>shove data into a tag</li>
 	    </ul></li>
 	    <li>log<ul>
-	        <li>status history</li>
-	        <li>shove data into history</li>
-	        <li>execution context field of a DecisionTaskCompletedEvent</li>
+	        <li>status shoves data into history</li>
+	        <li>execution context of DecisionTaskCompletedEvent</li>
 	        <li>use a history analyzer to pull it out</li>
 	    </ul></li>
 	</ul>
@@ -912,7 +916,6 @@ RetryPolicy retryPolicy = new ExponentialRetryPolicy(60).
         withMaximumAttempts(numberOfTokens).withExceptionsToRetry([IllegalStateException])
 DoTry&lt;String> tryToWin = doTry {
     retry(retryPolicy) {
-        if (numberOfTokens <= 0) { null }
         numberOfTokens--
         return promiseFor(activities.win('a carnival game'))
     }
@@ -1008,6 +1011,9 @@ waitFor(allPromises(eating, watching)) {
 					</ul>
 				</section>
 
+				<section data-background="lib/img/110394524_8dbc5b9cc7_o.jpg">
+					<h1>Implementation of Glisten</h1>
+				</section>
 
 				<section data-background="lib/img/110394524_8dbc5b9cc7_o.jpg">
 					<h3>Glisten SWF Implementation</h3>
@@ -1083,7 +1089,7 @@ waitFor(allPromises(eating, watching)) {
     BayAreaTripActivitiesImpl bayAreaTripActivities =
         new BayAreaTripActivitiesImpl(
             activity: mockActivity,
-            hikeNameToLengthInSteps: ['there': 2])
+            hikeNameToLengthInSteps: ['there': 3])
 
     def 'should hike'() {
         when: String expectedResult = bayAreaTripActivities.hike('there')
@@ -1117,18 +1123,12 @@ waitFor(allPromises(eating, watching)) {
 </code></pre>
 				</section>
 
-
-
-				<section>
-					<h2>Show Unit Tests</h2>
-				</section>
-
 				<section>
 					<h2>Show Asgard's use of SWF</h2>
 					<p><a href="http://www.youtube.com/watch?v=wY49LuXfwH0">Asgard Show Episode 2 (30:45 - 38:30)</a></p>
 				</section>
 
-				<section>
+				<section data-background="lib/img/3049035064_d5be80cb28_o.jpg">
 					<h2>Questions</h2>
 				</section>
 
