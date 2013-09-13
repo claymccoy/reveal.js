@@ -304,7 +304,7 @@ open reveal.js/index.html
 @Workflow
 @WorkflowRegistrationOptions(
     defaultExecutionStartToCloseTimeoutSeconds = 60L)
-interface TestActivities {
+interface TestWorkflow {
 @Execute(version = '1.0')
     void doIt()
 }
@@ -337,7 +337,7 @@ interface TestActivities {
 	<p>becomes</p>
 <pre style="opacity:0.7"><code contenteditable>interface TestActivities {
     Promise&lt;String> doSomething()
-    void doSomething(Promise&lt;String> thing)
+    void consumeSomething(Promise&lt;String> thing)
 }
 </code></pre>
 					<ul class="fragment">
