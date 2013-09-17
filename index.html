@@ -376,7 +376,7 @@ interface TestActivities {
 				<section data-background="lib/img/MousetrapGame2.jpg">
 					<h3>Difficult Setup</h3>
 					<ul>
-						<li>AsgpectJ and code generation</li>
+						<li>AspectJ and code generation</li>
 						<li>Groovy and Grails already have enough magic</li>
 						<li><a href="http://docs.aws.amazon.com/amazonswf/latest/awsflowguide/setup.html">Eclipse only instructions.</a></li>
 						<li><a href="http://stackoverflow.com/questions/9392655/how-to-consume-amazon-swf">even after following both the load-time and compile-time weaving instructions in the Setting up the Development Environment documentation I was unable to successfully get the classes</a></li>
@@ -478,12 +478,12 @@ waitFor(promise) {
     private final TestActivitiesClient client = new TestActivitiesClientImpl();
 
     void doIt() {
-        Promise<String> result = client.doSomething()
+        Promise&lt;String> result = client.doSomething()
 		waitForSomething(result)
     }
 
     @Asynchronous
-    void waitForSomething(Promise<String> something) {
+    void waitForSomething(Promise&lt;String> something) {
         client.consumeSomething(something)
     }
 }
@@ -491,7 +491,7 @@ waitFor(promise) {
 					<p>Flow vs Glisten Workflow Impl</p>
 <pre style="opacity:0.7"><code contenteditable>class TestWorkflowImpl implements TestWorkflow {
     @Delegate
-    WorkflowOperations<TestActivities> workflowOperations = SwfWorkflowOperations.of(TestActivities)
+    WorkflowOperations&lt;TestActivities> workflowOperations = SwfWorkflowOperations.of(TestActivities)
 
     void doIt() {
         waitFor(activities.doSomething()) {
@@ -506,7 +506,7 @@ waitFor(promise) {
 					<p>Glisten Workflow Impl</p>
 <pre style="opacity:0.7"><code contenteditable>class TestWorkflowImpl implements TestWorkflow {
     @Delegate
-    WorkflowOperations<TestActivities> workflowOperations = SwfWorkflowOperations.of(TestActivities)
+    WorkflowOperations&lt;TestActivities> workflowOperations = SwfWorkflowOperations.of(TestActivities)
 
     void doIt() {
         waitFor(activities.doSomething()) {
@@ -573,6 +573,7 @@ waitFor(promise) {
 	<ul>
 		<li>workflow execution description<ul>
 	        <li>shove data into a tag</li>
+	        <li>hooks to put your own metadata into 4 remaining tags</li>
 	    </ul></li>
 	    <li>log<ul>
 	        <li>status shoves data into history</li>
