@@ -300,8 +300,7 @@ open reveal.js/index.html
 				<section data-background="lib/img/145746706_6b85c7537f_z.jpg">
 					<h3>Flow based code structure</h3>
 					<p>interfaces</p>
-<pre style="opacity:0.7"><code contenteditable>
-@Workflow
+<pre style="opacity:0.7"><code contenteditable>@Workflow
 @WorkflowRegistrationOptions(
     defaultExecutionStartToCloseTimeoutSeconds = 60L)
 interface TestWorkflow {
@@ -309,8 +308,7 @@ interface TestWorkflow {
     void doIt()
 }
 </code></pre>
-<pre style="opacity:0.7"><code contenteditable>
-@Activities(version = "1.0")
+<pre style="opacity:0.7"><code contenteditable>@Activities(version = "1.0")
 @ActivityRegistrationOptions(
     defaultTaskScheduleToStartTimeoutSeconds = -1L,
     defaultTaskStartToCloseTimeoutSeconds = 300L)
@@ -335,7 +333,7 @@ interface TestActivities {
 </code></pre>
 <div class="fragment">
 	<p>becomes</p>
-<pre style="opacity:0.7"><code contenteditable>interface TestActivities {
+<pre style="opacity:0.7"><code contenteditable>interface TestActivitiesClient {
     Promise&lt;String> doSomething()
     void consumeSomething(Promise&lt;String> thing)
 }
@@ -1105,7 +1103,7 @@ waitFor(allPromises(eating, watching)) {
 				</section>
 
 				<section data-background="lib/img/110394524_8dbc5b9cc7_o.jpg">
-					<h3>Activities Unit Tests</h3>
+					<h3>Workflow Unit Tests</h3>
 <pre style="opacity:0.6"><code contenteditable>class BayAreaTripWorkflowSpec extends Specification {
     BayAreaTripActivities mockActivities = Mock(BayAreaTripActivities)
     BayAreaTripWorkflow workflow = new BayAreaTripWorkflowImpl(
