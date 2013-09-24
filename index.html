@@ -391,7 +391,7 @@ interface TestActivities {
 						<li>Flow - (AspectJ + generated code) + Groovy</li>
 						<li>ease of use SWF library</li>
 						<li>still uses core Flow objects</li>
-						<li>part of Asgard, dedicated Github project soon</li>
+						<li>was part of Asgard, now a separate project on Github</li>
 					</ul>
 				</section>
 
@@ -617,46 +617,26 @@ interface BayAreaTripWorkflow {
 				<section data-background="lib/img/graphs/GraphBayAreaTripWorkflow.png">
 					<h3>Workflow Implementation Overview</h3>
 <pre style="opacity:0.6"><code contenteditable>class BayAreaTripWorkflowImpl implements BayAreaTripWorkflow {
-
+    @Delegate
     WorkflowOperations&lt;BayAreaTripActivities> workflowOperations =
-            SwfWorkflowOperations.of(BayAreaTripActivities)
-
+    	SwfWorkflowOperations.of(BayAreaTripActivities)
     @Override
-    void start(String name, Collection previouslyVisited) {
-        ...
-        Promise&lt;String> result = workflowOperations.promiseFor(
-            workflowOperations.activities.goTo(name,
-            BayAreaLocation.GoldenGateBridge))
-        ...
+    void start(String name,
+    		Collection&lt;BayAreaLocation> previouslyVisited) {
+        Promise&lt;BayAreaLocation> destinationPromise =
+        	determineDestination(previouslyVisited)
+        waitFor(destinationPromise) { BayAreaLocation destination ->
+            waitFor(activities.goTo(name, destination)) {
+                ...
+            }
+        }
     }
 }
 </code></pre>
 					<ul class="fragment">
-						<li>start impl is decider logic</li>
+						<li>implementation is decider logic</li>
 						<li>workflowOperations handles workflow concerns</li>
-						<li>initialized with SwfWorkflowOperations</li>
-					</ul>
-				</section>
-
-				<section data-background="lib/img/graphs/GraphBayAreaTripWorkflow.png">
-					<h3>Workflow Implementation Overview</h3>
-<pre style="opacity:0.6"><code contenteditable>class BayAreaTripWorkflowImpl implements BayAreaTripWorkflow {
-
-    @Delegate
-    WorkflowOperations&lt;BayAreaTripActivities> workflowOperations =
-            SwfWorkflowOperations.of(BayAreaTripActivities)
-
-    @Override
-    void start(String name, Collection previouslyVisited) {
-        ...
-        Promise&lt;String> result = promiseFor(
-                activities.goTo(name, BayAreaLocation.GoldenGateBridge))
-        ...
-    }
-}
-</code></pre>
-					<ul>
-						<li>@Delegate cleans up the code</li>
+						<li>@Delegate makes operations available (waitFor, activities)</li>
 					</ul>
 				</section>
 
@@ -710,13 +690,8 @@ interface BayAreaTripActivities {
         new SwfActivityOperations()
 
     @Override
-    String hike(String somewhere) {
-        int stepsTaken = 0
-        int totalStepsForHike = getHikeLengthInSteps(somewhere)
-        while (stepsTaken &lt; totalStepsForHike) {
-            recordHeartbeat("Took ${++stepsTaken} steps.")
-        }
-        "And hiked ${somewhere}."
+    String goTo(String name, BayAreaLocation location) {
+        "${name} went to ${location}."
     }
     ...
 }
@@ -725,7 +700,6 @@ interface BayAreaTripActivities {
 						<li>activities are POGOs (even POJOs)</li>
 						<li>dependencies can be injected</li>
 						<li>activityOperations handles activity concerns</li>
-						<li>recordHeartbeat used in hike impl</li>
 					</ul>
 				</section>
 
@@ -741,42 +715,26 @@ interface BayAreaTripActivities {
 				<section data-background="lib/img/graphs/location.png">
 					<h3>Workflow Implementation</h3>
 					<p>determine location</p>
-<pre style="opacity:0.6"><code contenteditable>Promise&lt;BayAreaLocation> destinationPromise = doTry {
-    if (!previouslyVisited.contains(BayAreaLocation.GoldenGateBridge)) {
-        return promiseFor(BayAreaLocation.GoldenGateBridge)
-    }
-    if (!previouslyVisited.contains(BayAreaLocation.Redwoods)) {
-        return promiseFor(BayAreaLocation.Redwoods)
-    } else {
-        waitFor(activities.askYesNoQuestion('Like roller coasters?')) {
-                boolean isThrillSeeker ->
-            if (isThrillSeeker) {
-                return promiseFor(BayAreaLocation.Boardwalk)
-            }
-            promiseFor(BayAreaLocation.Monterey)
+<pre style="opacity:0.6"><code contenteditable>Promise&lt;BayAreaLocation> determineDestination(previouslyVisited) {
+  if (!previouslyVisited.contains(BayAreaLocation.GoldenGateBridge)) {
+    return promiseFor(BayAreaLocation.GoldenGateBridge)
+  }
+  if (!previouslyVisited.contains(BayAreaLocation.Redwoods)) {
+    return promiseFor(BayAreaLocation.Redwoods)
+  } else {
+    waitFor(activities.askYesNoQuestion('Like roller coasters?')) {
+            boolean isThrillSeeker ->
+        if (isThrillSeeker) {
+            return promiseFor(BayAreaLocation.Boardwalk)
         }
+        promiseFor(BayAreaLocation.Monterey)
     }
-}.result
+  }
+}
 </code></pre>
 					<ul class="fragment">
 						<li>askYesNoQuestion is an activity</li>
 						<li>returns promise since some results depend on activity</li>
-					</ul>
-				</section>
-
-				<section data-background="lib/img/graphs/location.png">
-					<h3>Workflow Implementation</h3>
-					<p>determine location</p>
-<pre style="opacity:0.6"><code contenteditable>waitFor(destinationPromise) { BayAreaLocation destination ->
-    waitFor(activities.goTo(name, destination)) {
-        status it
-        switch (destination) {
-        ...
-</code></pre>
-					<ul class="fragment">
-						<li>once destinationPromise is decided</li>
-						<li>go to destination</li>
-						<li>conditional logic based on destination</li>
 					</ul>
 				</section>
 
@@ -817,8 +775,7 @@ boolean askYesNoQuestion(String question) {
 				<section data-background="lib/img/graphs/bridge.png">
 					<h3>Workflow Implementation</h3>
 					<p>at bridge</p>
-<pre style="opacity:0.6"><code contenteditable>waitFor(activities.goTo(name, destination)) {
-    status it
+<pre style="opacity:0.6"><code contenteditable>private Promise&lt;Void> doAtBridge() {
     waitFor(activities.hike('across the bridge')) { status it }
 }
 </code></pre>
@@ -827,10 +784,18 @@ boolean askYesNoQuestion(String question) {
 				<section data-background="lib/img/graphs/bridge.png">
 					<h3>Activities Implementation</h3>
 					<p>at bridge</p>
-<pre style="opacity:0.6"><code contenteditable>String goTo(String name, BayAreaLocation location) {
-    "${name} went to ${location}."
+<pre style="opacity:0.6"><code contenteditable>String hike(String somewhere) {
+    int stepsTaken = 0
+    int totalStepsForHike = getHikeLengthInSteps(somewhere)
+    while (stepsTaken &lt; totalStepsForHike) {
+        recordHeartbeat("Took ${++stepsTaken} steps.")
+    }
+    "And hiked ${somewhere}."
 }
 </code></pre>
+					<ul class="fragment">
+						<li>recordHeartbeat is a pulse for the workflow</li>
+					</ul>
 				</section>
 
 				<section data-background="lib/img/3719867208_f80b78affb_b.jpg" data-transition="zoom">
@@ -857,25 +822,27 @@ boolean askYesNoQuestion(String question) {
 				<section data-background="lib/img/graphs/redwoods.png">
 					<h3>Workflow Implementation</h3>
 					<p>at redwoods</p>
-<pre style="opacity:0.6"><code contenteditable>status 'And stretched before hiking.'
-waitFor(timer(10)) {
-    DoTry&lt;String> hiking = doTry {
-        promiseFor(activities.hike('through redwoods'))
-    }
-    DoTry&lt;Void> countDown = cancellableTimer(30)
-    waitFor(anyPromises(countDown.getResult(), hiking.getResult())) {
-        if (hiking.getResult().isReady()) {
-            countDown.cancel(null)
-            status "${hiking.getResult().get()}"
-        } else {
-            hiking.cancel(null)
-            status 'And ran out of time when hiking.'
+<pre style="opacity:0.6"><code contenteditable>private Promise&lt;Void> doAtRedwoods() {
+    status 'And stretched for 10 seconds before hiking.'
+    waitFor(timer(10)) {
+        DoTry&lt;String> hiking = doTry {
+            promiseFor(activities.hike('through redwoods'))
+        }
+        DoTry&lt;Void> countDown = cancellableTimer(30)
+        waitFor(anyPromises(countDown.getResult(), hiking.getResult())) {
+            if (hiking.getResult().isReady()) {
+                countDown.cancel(null)
+                status "${hiking.getResult().get()}"
+            } else {
+                hiking.cancel(null)
+                status 'And ran out of time when hiking.'
+            }
         }
     }
 }
 </code></pre>
 					<ul class="fragment">
-						<li>timer then do something</li>
+						<li>timer fires, then do something</li>
 						<li>do things and stop when ANY one finishes</li>
 						<li>DoTry allows us to cancel other activity</li>
 					</ul>
@@ -909,18 +876,21 @@ waitFor(timer(10)) {
 				<section data-background-transition="zoom" data-background="lib/img/graphs/boardwalk.png">
 					<h3>Workflow Implementation</h3>
 					<p>at boardwalk</p>
-<pre style="opacity:0.6"><code contenteditable>int numberOfTokensGiven = 3
-int numberOfTokens = numberOfTokensGiven
-RetryPolicy retryPolicy = new ExponentialRetryPolicy(60).
-        withMaximumAttempts(numberOfTokens).withExceptionsToRetry([IllegalStateException])
-DoTry&lt;String> tryToWin = doTry {
-    retry(retryPolicy) {
-        numberOfTokens--
-        return promiseFor(activities.win('a carnival game'))
+<pre style="opacity:0.6"><code contenteditable>private Promise&lt;Void> doAtBoardwalk() {
+    int numberOfTokensGiven = 3
+    int numberOfTokens = numberOfTokensGiven
+    RetryPolicy retryPolicy = new ExponentialRetryPolicy(60).
+            withMaximumAttempts(numberOfTokens).
+            withExceptionsToRetry([IllegalStateException])
+    DoTry&lt;String> tryToWin = doTry {
+        return retry(retryPolicy) {
+            numberOfTokens--
+            promiseFor(activities.win('a carnival game'))
+        }
+    } withCatch { Throwable e ->
+        return promiseFor("${e.message} ${numberOfTokensGiven} times.")
     }
-} withCatch { Throwable e ->
-    status "${e.message} ${numberOfTokensGiven} times."
-}
+    ...
 </code></pre>
 					<ul class="fragment">
 						<li>Flow RetryPolicy</li>
@@ -931,12 +901,14 @@ DoTry&lt;String> tryToWin = doTry {
 				<section data-background-transition="zoom" data-background="lib/img/graphs/boardwalk.png">
 					<h3>Workflow Implementation</h3>
 					<p>at boardwalk</p>
-<pre style="opacity:0.6"><code contenteditable>waitFor(tryToWin.result) {
-    status it
-    if (numberOfTokens > 0) {
-        waitFor(activities.enjoy('a roller coaster')) { status it }
+<pre style="opacity:0.6"><code contenteditable>    ...
+    waitFor(tryToWin.result) {
+        status it
+        if (numberOfTokens > 0) {
+            waitFor(activities.enjoy('a roller coaster')) { status it }
+        }
+        Promise.Void()
     }
-    Promise.Void()
 }
 </code></pre>
 				</section>
@@ -944,10 +916,6 @@ DoTry&lt;String> tryToWin = doTry {
 				<section data-background="lib/img/graphs/boardwalk.png">
 					<h3>Activities Implementation</h3>
 					<p>at boardwalk</p>
-<pre style="opacity:0.6"><code contenteditable>String enjoy(String something) {
-    "And enjoyed ${something}."
-}
-</code></pre>
 <pre style="opacity:0.6"><code contenteditable>String win(String game) {
     if (isWinner()) {
         return "And won ${game}."
@@ -989,18 +957,22 @@ DoTry&lt;String> tryToWin = doTry {
 				<section data-background="lib/img/graphs/monterey.png">
 					<h3>Workflow Implementation</h3>
 					<p>at Monterey</p>
-<pre style="opacity:0.6"><code contenteditable>Promise&lt;String> eating = promiseFor(activities.enjoy('seafood'))
-Promise&lt;String> watching = promiseFor(activities.enjoy('sea lions'))
-waitFor(allPromises(eating, watching)) {
+<pre style="opacity:0.6"><code contenteditable>private Promise&lt;Void> doAtMonterey() {
+  Promise&lt;String> eating = promiseFor(activities.enjoy('eating seafood'))
+  Promise&lt;String> watching = promiseFor(activities.enjoy('watching sea lions'))
+  waitFor(allPromises(eating, watching)) {
+    status "${eating.get()} ${watching.get()}"
     doTry {
-        promiseFor(activities.enjoy('the beach'))
+      promiseFor(activities.enjoy('looking for sea glass on the beach'))
     } withCatch { Throwable t ->
-        status t.message
-        promiseFor(activities.enjoy('the aquarium'))
+      status t.message
+      promiseFor(activities.enjoy('the aquarium'))
     } withFinally { String result ->
-        status result
-        waitFor(activities.enjoy('the 17-Mile Drive')) { status it }
+      status result
+      waitFor(activities.enjoy('the 17-Mile Drive')) { status it }
     }
+    Promise.Void()
+  }
 }
 </code></pre>
 					<ul class="fragment">
