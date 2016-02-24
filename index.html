@@ -4,9 +4,9 @@
 	<head>
 		<meta charset="utf-8">
 
-		<title>wakeboard 720</title>
+		<title>Akka Tide</title>
 
-		<meta name="description" content="The Software Engineer Guide to Learning a 720 on a Wakeboard (and Akka)">
+		<meta name="description" content="Introducing Akka at Netflix">
 		<meta name="author" content="Clay McCoy">
 
 		<meta name="apple-mobile-web-app-capable" content="yes" />
@@ -36,16 +36,16 @@
 
 			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
-				<section data-background="lib/img/wake/images_action_09cab7.jpg">
-					<h2>The Software Engineer's Guide to</h1>
-					<h3>Learning a 720 on a Wakeboard (and Akka)</h3>
+				<section data-background="lib/img/nflx.png">
+					<h2>Introducing Akka at Netflix</h1>
 					<p><small>Created by Clay McCoy</small></p>
 						<br/>
 						<p><small>latest slides on Github</small></p>
-						<pre style="opacity:0.7"><code contenteditable>git clone -b wake720 https://github.com/claymccoy/reveal.js.git
+						<pre style="opacity:0.7"><code contenteditable>git clone -b AkkaAndTide https://github.com/claymccoy/reveal.js.git
 open reveal.js/index.html
 </code></pre>
 				</section>
+
 				<section data-background="lib/img/personal/family.png">
 					<div style="position:relative;left:25%;">
 						<h2>About Me</h2>
@@ -55,272 +55,194 @@ open reveal.js/index.html
 							<li><a href="https://github.com/Netflix/asgard">Asgard</a> and <a href="https://github.com/Spinnaker/spinnaker">Spinnaker</a>
 							<li><a href="https://twitter.com/ClayMcCoy">twitter.com/ClayMcCoy</a></li>
 							<li><a href="https://github.com/claymccoy">github.com/claymccoy</a>
+						</ul>
 					</div>
 				</section>
 
-				
-				<section data-background="lib/img/personal/215342_5155512245_3522_n.jpg">
+				<section data-background="lib/img/stackShow.png">
+						<h2>Asgard</h2>
+						<ul>
+							<li>AWS deployment web app</li>
+							<li>Grails</li>
+							<li>open sourced in 2012</li>
+							<li>still used by many companies</li>
+							<li>baked in Netflix conventions</li>
+							<li>no sharing of AWS credentials</li>
+							<li>a better AWS console?</li>
+						</ul>
 				</section>
 
-                <section>
-				  <section data-background="lib/img/wake/moomba-wakeboarder.jpg">
-					<h2>What is Wakeboarding?</h2>
-					<ul>
-						<li>like snowboarding but on water</li>
-						<li>pulled by rope not pushed by gravity</li>
-						<li>usually by a boat</li>
-					</ul>
-				  </section>
-				  <section data-background="lib/img/akka/akka-20-reloaded-8-638.jpg">
+				<section data-background="lib/img/spinnaker.png">
+						<h2>Spinnaker</h2>
+						<ul>
+							<li>a better Asgard</li>
+							<li>open sourced 11/2015</li>
+							<li>Spring Boot microservices</li>
+							<li>multiple cloud providers</li>
+							<li>from commit to deploy</li>
+							<li>pipelines</li>
+						</ul>
+				</section>
+
+				<section data-background="lib/img/pipeline.png">
+						<h2>Long Running Workflows</h2>
+						<ul>
+							<li>deployments can take hours or days</li>
+							<li>requirements
+						      <ul>
+						      	<li>transition work to new instance</li>
+						      	<li>recover existing tasks</li>
+						      	<li>scale across many instances</li>
+						      	<li>sleep without holding threads</li>
+						      </ul>
+					        </li>
+							<li>options
+						      <ul>
+								<li>write your own workflow engine</li>
+								<li>AWS Simple Workflow Service</li>
+								<li>Spring Batch</li>
+						      </ul>
+					        </li>
+						</ul>
+				</section>
+
+				<section data-background="lib/img/akka/akka-20-reloaded-8-638.jpg">
 					<h2>What is Akka?</h2>
 					<ul>
 						<li>open source</li>
-                        <li>actors</li>
-                        <li>event-driven</li>
-                        <li>JVM</li>
+                      <li>actors</li>
+                      <li>event-driven</li>
+                      <li>JVM</li>
 					</ul>
-				  </section>
 				</section>
 
-                <section>
-				  <section data-background="lib/img/wake/wakeboard_542_360_xsa.gr.jpg">
-					<h2>Why wakeboard?</h2>
-					<ul>
-						<li>Why not?</li>
-					</ul>
-				  </section>
-				  <section data-background="lib/img/akka/Script-of-the-Day-Akka-2.png">
+				<section data-background="lib/img/akka/Script-of-the-Day-Akka-2.png">
 					<h2>Why Akka?</h2>
 					<ul>
-						<li>scale up (concurrency)</li>
-                        <li>scale out (distributed)</li>
-                        <li>fault tolerant</li>
+					  <li>scale up (concurrency)</li>
+                      <li>scale out (distributed)</li>
+                      <li>fault tolerant</li>
 					</ul>
-				  </section>
 				</section>
 
-                <section>
-				  <section data-background="lib/img/personal/163177_10150117997952246_4817707_n.jpg">
-					<h2>wakeboarding Tools</h2>
-					<ul>
-						<li>board</li>
-						<li>bindings</li>
-						<li>lifejacket</li>
-						<li>rope</li>
-					</ul>
-				  </section>
-				  <section data-background="lib/img/personal/168416_10150117997417246_580910_n.jpg">
-					<h2>wakeboarding Tools</h2>
-					<ul>
-						<li>boat</li>
-						<li>water (a lot!)</li>
-					</ul>
-				  </section>
-				  <section data-background="lib/img/akka/scala/scala-logo.png">
-					<h2>Akka Tools</h2>
-					<ul>
-						<li>Scala</li>
-					</ul>
-				  </section>
-				  <section data-background="lib/img/akka/scala/scala-9-638.jpg">
-					<h2>Akka Tools</h2>
-					<ul>
-						<li>Scala case classes</li>
-					</ul>
-				  </section>
-				  <section data-background="lib/img/akka/scala/scala-essentials-pattern-matching-and-case-classes-2-638.jpg">
-					<h2>Akka Tools</h2>
-					<ul>
-						<li>Scala pattern matching</li>
-					</ul>
-				  </section>
-				  <section data-background="lib/img/akka/scala/scala-paradigms-9-728.jpg">
-					<h2>Akka Tools</h2>
-					<ul>
-						<li>Scala pattern matching</li>
-					</ul>
-				  </section>
-				</section>
-
-                <section>
-				  <section data-background="lib/img/wake/getUp.jpg">
-					<h2>Getting Started</h2>
-					<ul>
-                      <li>straight arms</li>
-                      <li>legs bent</li>
-                      <li>let the boat do the work</li>
-					</ul>
-				  </section>
-				  <section data-background="lib/img/wake/WakeboardingInSwitzerland.jpg">
-					<h2>Getting Started</h2>
-					<ul>
-                      <li>pick a hip to lead with</li>
-                      <li>stance (knees bent; ankles, hips, shoulders in line)</li>
-                      <li>weight centered</li>
-                      <li>lean over toes or heels to move</li>
-					</ul>
-				  </section>
-				  <section data-background="lib/img/akka/8284OS_05_9.png">
-					<h2>Getting Started</h2>
+				<section data-background="lib/img/akka/8284OS_05_9.png">
+					<h2>Akka Basics</h2>
 					<ul>
                       <li>message queue</li>
                       <li>dispatcher gives actor a thread and a message</li>
                       <li>lightweight (make millions of actors)</li>
                       <li>actors share no state</li>
 					</ul>
-				  </section>
 				</section>
 
-                <section>
-				  <section data-background="lib/img/wake/barco_wake.gif">
-					<h2>Vocabulary</h2>
+				  <section data-background="lib/img/akka/scala/scala-logo.png">
+					<h2>Why Akka + Scala?</h2>
 					<ul>
-                      <li>toeside/heelside edges</li>
-                      <li>frontside/backside rotation</li>
-                      <li>switch (learn everything twice)</li>
-                      <li>180/360/540/720</li>
+						<li>case classes</li>
+						<li>pattern matching</li>
 					</ul>
 				  </section>
-				  <section data-background="lib/img/akka/an-introduction-to-akka-7-638.jpg">
-					<h2>Vocabulary</h2>
+
+				  <section data-background="lib/img/akka/scala/scala-9-638.jpg">
+					<h2>Scala case classes</h2>
+					<ul>
+						<li>immutable state</li>
+						<li>use as actor messages</li>
+					</ul>
+				  </section>
+
+				  <section data-background="lib/img/akka/scala/scala-essentials-pattern-matching-and-case-classes-2-638.jpg">
+					<h2>Scala pattern matching</h2>
+					<ul>
+						<li>elegant conditional logic</li>
+						<li>use to decide how to handle messages</li>
+					</ul>
+				  </section>
+
+				<section data-background="lib/img/akka/scala/scala-paradigms-9-728.jpg">
+			      <h2>Scala pattern matching</h2>
+				</section>
+
+				<section data-background="lib/img/akka/akka-streams-kafka-kinesis-11-638.jpg">
+				</section>
+
+				<section data-background="lib/img/akka/an-introduction-to-akka-7-638.jpg">
+					<h2></h2>
 					<ul>
                       <li>extend Actor</li>
                       <li>receive method</li>
-                      <li>send !</li>
-                      <li>ask ?</li>
+                      <li>send ! or ask ?</li>
+                      <li>ActorRef</li>
                       <li>sender()</li>
 					</ul>
-				  </section>
 				</section>
 
-                <section>
-				  <section data-background="lib/img/wake/WAKEBOARDING-AT-SUNSET.jpg">
-					<h2>Building Blocks</h2>
+				<section data-background="lib/img/akka/akkaSystem.png">
 					<ul>
-						<p>wake jump</p>
-						<li>use the whole wake</li>
-						<li>stand tall at top</li>
-						<li>balanced</li>
+                      <li>become</li>
+                      <li>lifecycle hooks</li>
+                      <li>supervisor</li>
+                      <li>location transparency</li>
 					</ul>
-				  </section>
-				  <section data-background="lib/img/wake/p_wakecamp1_b.jpg">
-					<h2>Building Blocks</h2>
-					<ul>
-						<li>progressive edge</li>
-					</ul>
-				  </section>
-				  <section data-background="lib/img/wake/kyle-rattray-toeside-360-600x365.jpg">
-					<h2>Building Blocks</h2>
-					<ul>
-						<li>smaller spins (180, 360)</li>
-					</ul>
-				  </section>
-				  <section data-background="lib/img/wake/p1024009935-4.jpg">
-					<h2>Building Blocks</h2>
-					<ul>
-						<li>smaller spins (540)</li>
-					</ul>
-				  </section>
-				  <section data-background="lib/img/akka/chess_example.png">
-					<h2>Akka Building Blocks</h2>
+				</section>
+
+				<section data-background="lib/img/akka/chess_example.png">
+					<h2>Akka Persistence</h2>
 					<ul>
 						<li>event sourcing</li>
-						<li>akka persistence</li>
+						<li>persistenceId</li>
+						<li>persist()</li>
+						<li>recovery
+						  <ul>
+						    <li>receiveCommand</li>
+						    <li>receiveRecover</li>
+						  </ul>
+					    </li>
+						<li>snapshots</li>
+						<li>pluggable</li>
 					</ul>
-				  </section>
-				  <section data-background="lib/img/akka/image01-500x449.png">
-					<h2>Akka Building Blocks</h2>
-					<ul>
-						<li>clustering</li>
-						<li>singleton</li>
-						<li>sharding</li>
-						<li>ids</li>
-					</ul>
-				  </section>
 				</section>
 
-                <section>
-				  <section data-background="lib/img/wake/backroll-sequence-large.jpg">
-					<h2>Optimization</h2>
+				<section data-background="lib/img/akka/image01-500x449.png">
+					<h2>Akka Clustering</h2>
 					<ul>
-                        <li>off axis</li>
+						<li>singleton or sharding</li>
+						<li>message id extractors</li>
+						<li>use with or without persistence</li>
+						<li>seed nodes</li>
+						<li>scalable resilient distributed system</li>
 					</ul>
-				  </section>
-				  <section data-background="lib/img/wake/6900751515_40e9fedb58.jpg">
-					<h2>Optimization</h2>
-					<ul>
-                        <li>off axis</li>
-					</ul>
-				  </section>
-				  <section data-background="lib/img/personal/163074_10150117999567246_3141498_n.jpg">
-					<h2>Optimization</h2>
-					<ul>
-                        <li>off axis</li>
-					</ul>
-				  </section>
-				  <section data-background="lib/img/akka/process2.png">
-					<h2>Optimization</h2>
-					<ul>
-						<li>concurrency</li>
-					</ul>
-				  </section>
-				</section>
-				
-                <section>
-				  <section data-background="lib/img/wake/EducateTSFS7.jpg">
-					<h2>Goal</h2>
-					<ul>
-                      <p>toeside frontside 720</p>
-                      <li>get pop first</li>
-                      <li>keep handle in close</li>
-                      <li>stay compact</li>
-                      <li>can skip last handle pass</li>
-					</ul>
-				  </section>
-				  <section data-background="lib/img/akka/lovely-corporate-architecture-distributed-highly-resilient-mobile-networks-558-x-299.jpg">
-					<h2>Goal</h2>
-					<ul>
-                      <li>distributed resilient system</li>
-					</ul>
-				  </section>
-				  <section data-background="lib/img/other/1956ce7.jpg">
-					<h2>Goal</h2>
-                      <p>You need something to progress towards.</p>
-                      <p>Today's goals are tomorrow's building blocks.</p>
-				  </section>
 				</section>
 
-                <section>
-				  <section data-background="lib/img/wake/306525.jpg">
-					<h2>Exercise</h2>
+				<section data-background="lib/img/personal/314216-netflix-logo.jpg">
+					<h2>Back To Netflix</h2>
 					<ul>
-					  <li>trampoline practice</li>
+						<li>Spinnaker</li>
+						<li>Orca</li>
+						<li>Clouddriver</li>
+						<li>VPC migration</li>
+						<li>Tide</li>
 					</ul>
-				  </section>
-				  <section data-background="lib/img/akka/reply-to-sender-pattern.png">
-					<h2>Exercise</h2>
-					<ul>
-						<li>unit testing</li>
-					</ul>
-				  </section>
-				  <section data-background="lib/img/other/feedbackloop.png">
-					<h2>Exercise</h2>
-					<ul>
-						<li>quick and cheap feedback loop</li>
-					</ul>
-				  </section>
 				</section>
 
-				<section data-background="lib/img/personal/">
-					<h2>Success</h2>
-					 <video>
-                       <source src="lib/img/personal/wakets7.mp4" type="video/mp4" />
-                     </video>
+				<section data-background="lib/img/Tide.png">
+					<h2>Tide Actors</h2>
 				</section>
 
-				<section data-background="lib/img/other/funny-marvel-superhero-action-figure-hrjoe-3_1424758012_725x725.jpg">
-						<p>Find something that brings excitement to the otherwise mundane.</p>
+				<section data-background="lib/img/other/images.jpeg">
+					<h2>Lessons Learned</h2>
+					<ul>
+						<li>distributed from beginning</li>
+						<li>keep logic out of actors</li>
+						<li>write more actor tests</li>
+						<li>messages - private, public, persisted</li>
+					</ul>
 				</section>
+
+				<section data-background="lib/img/other/3049035064_d5be80cb28_o.jpg">
+					<h2>Questions</h2>
+				</section>
+
 
 			</div>
 
